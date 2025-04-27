@@ -7,7 +7,6 @@
     @fluxAppearance
 </head>
 <body>
-    <h1>Hello!</h1>
 <x-layouts.app.sidebar :title="$title ?? null">
     <flux:main>
         {{ $slot }}
