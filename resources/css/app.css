@@ -27,6 +27,7 @@
     --color-accent: var(--color-indigo-500);
     --color-accent-content: var(--color-indigo-600);
     --color-accent-foreground: var(--color-white);
+    --font-sans: Inter, sans-serif;
 }
 
 @layer theme {
@@ -34,6 +35,7 @@
         --color-accent: var(--color-indigo-500);
         --color-accent-content: var(--color-indigo-300);
         --color-accent-foreground: var(--color-white);
+        --font-sans: Inter, sans-serif;
     }
 }
 
