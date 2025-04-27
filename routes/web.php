@@ -45,7 +45,6 @@ use App\Livewire\Vehicles\Create;
 
 Route::get('/vehicles/create', Create::class)->name('vehicles.create');
 
-
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
