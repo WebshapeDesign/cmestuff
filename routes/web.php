@@ -17,9 +17,14 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('users');
 
-    Route::view('vehicles', 'vehicles')
-    ->middleware(['auth', 'verified'])
-    ->name('vehicles');
+    use App\Models\Vehicle;
+
+    Route::get('vehicles', function () {
+        return view('vehicles', [
+            'vehicles' => Vehicle::all(),
+        ]);
+    })->middleware(['auth', 'verified'])->name('vehicles');
+    
 
     Route::view('timesheets', 'timesheets')
     ->middleware(['auth', 'verified'])
