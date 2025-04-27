@@ -1,8 +1,5 @@
-<x-layouts.app :title="__('Vehicles')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-
-
-    <flux:main container>
+<div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
+<flux:main container>
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-2">
                 <div class="flex items-center gap-2">
@@ -135,9 +132,5 @@
 
     </flux:table.rows>
 </flux:table>
-
-
-       
     </flux:main>
 </div>
-</x-layouts.app>
