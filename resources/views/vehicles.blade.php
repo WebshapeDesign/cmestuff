@@ -61,20 +61,33 @@
             
         </div>
 
-        <flux:table>
+        <flux:table :paginate="$vehicles">
     <flux:table.columns>
         <flux:table.column></flux:table.column>
-        <flux:table.column class="max-md:hidden">Registration</flux:table.column>
-        <flux:table.column class="max-md:hidden">Mileage</flux:table.column>
-        <flux:table.column class="max-md:hidden">Condition</flux:table.column>
-        <flux:table.column>Assignee</flux:table.column>
+
+        <flux:table.column sortable :sorted="$sortBy === 'registration_number'" :direction="$sortDirection" wire:click="sort('registration_number')">
+            Registration
+        </flux:table.column>
+
+        <flux:table.column sortable :sorted="$sortBy === 'current_mileage'" :direction="$sortDirection" wire:click="sort('current_mileage')">
+            Mileage
+        </flux:table.column>
+
+        <flux:table.column sortable :sorted="$sortBy === 'condition'" :direction="$sortDirection" wire:click="sort('condition')">
+            Condition
+        </flux:table.column>
+
+        <flux:table.column sortable :sorted="$sortBy === 'user_id'" :direction="$sortDirection" wire:click="sort('user_id')">
+            Assignee
+        </flux:table.column>
+
         <flux:table.column></flux:table.column>
     </flux:table.columns>
 
     <flux:table.rows>
 
         @foreach ($vehicles as $vehicle)
-            <flux:table.row>
+            <flux:table.row :key="$vehicle->id">
                 <flux:table.cell class="pr-2">
                     <flux:checkbox />
                 </flux:table.cell>
@@ -102,12 +115,8 @@
                         <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom"></flux:button>
 
                         <flux:menu>
-                            <flux:menu.item icon="document-text">
-                                View Vehicle
-                            </flux:menu.item>
-                            <flux:menu.item icon="receipt-refund">
-                                Edit Vehicle
-                            </flux:menu.item>
+                            <flux:menu.item icon="document-text">View Vehicle</flux:menu.item>
+                            <flux:menu.item icon="receipt-refund">Edit Vehicle</flux:menu.item>
                         </flux:menu>
                     </flux:dropdown>
                 </flux:table.cell>

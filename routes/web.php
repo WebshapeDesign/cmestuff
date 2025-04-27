@@ -17,13 +17,11 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('users');
 
-    use App\Models\Vehicle;
+    use App\Livewire\Vehicles\Index;
 
-    Route::get('vehicles', function () {
-        return view('vehicles', [
-            'vehicles' => Vehicle::all(),
-        ]);
-    })->middleware(['auth', 'verified'])->name('vehicles');
+    Route::get('vehicles', Index::class)
+        ->middleware(['auth', 'verified'])
+        ->name('vehicles');
     
 
     Route::view('timesheets', 'timesheets')
