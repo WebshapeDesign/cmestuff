@@ -16515,6 +16515,9 @@ var Superscript = Mark2.create({
 // js/mixins/disableable.js
 var Disableable = class extends Mixin {
   boot({ options }) {
+    options({
+      disableWithParent: true
+    });
     this.onChanges = [];
     Object.defineProperty(this.el, "disabled", {
       get: () => {
@@ -16530,7 +16533,7 @@ var Disableable = class extends Mixin {
     });
     if (this.el.hasAttribute("disabled")) {
       this.el.disabled = true;
-    } else if (this.el.closest("[disabled]")) {
+    } else if (this.options().disableWithParent && this.el.closest("[disabled]")) {
       this.el.disabled = true;
     }
     let observer = new MutationObserver((mutations) => {
@@ -16559,6 +16562,81 @@ var Disableable = class extends Mixin {
   }
   isDisabled() {
     return this.el.disabled;
+  }
+};
+
+// js/mixins/submittable.js
+var Submittable = class extends Mixin {
+  boot({ options }) {
+    options({
+      name: void 0,
+      value: void 0,
+      includeWhenEmpty: true,
+      shouldUpdateValue: true
+    });
+    this.name = this.options().name;
+    this.value = this.options().value === void 0 ? this.el.value : this.options().value;
+    this.state = false;
+    this.observer = new MutationObserver(() => {
+      this.renderHiddenInputs();
+    });
+    this.observer.observe(this.el, { childList: true });
+  }
+  mount() {
+    this.renderHiddenInputs();
+  }
+  update(value) {
+    if (this.options().shouldUpdateValue) {
+      this.value = value;
+    } else {
+      this.state = !!value;
+    }
+    this.renderHiddenInputs();
+  }
+  valueIsEmpty() {
+    return this.value === void 0 || this.value === null || this.value === "";
+  }
+  renderHiddenInputs() {
+    this.observer.disconnect();
+    if (!this.name) return;
+    let children = this.el.children;
+    let oldInputs = [];
+    for (let i = 0; i < children.length; i++) {
+      let child = children[i];
+      if (child.hasAttribute("data-flux-hidden")) oldInputs.push(child);
+    }
+    oldInputs.forEach((i) => i.remove());
+    let hiddenInputs;
+    if (this.options().shouldUpdateValue) {
+      hiddenInputs = !this.valueIsEmpty() || this.options().includeWhenEmpty ? this.generateInputs(this.name, this.value) : [];
+    } else {
+      hiddenInputs = this.state || this.options().includeWhenEmpty ? this.generateInputs(this.name, this.value) : [];
+    }
+    hiddenInputs.forEach((hiddenInput) => {
+      this.el.append(hiddenInput);
+    });
+    this.observer.observe(this.el, { childList: true });
+  }
+  generateInputs(name, value, carry = []) {
+    if (this.isObjectOrArray(value)) {
+      for (let key in value) {
+        carry = carry.concat(
+          this.generateInputs(`${name}[${key}]`, value[key])
+        );
+      }
+    } else {
+      let el = document.createElement("input");
+      el.setAttribute("type", "hidden");
+      el.setAttribute("name", name);
+      el.setAttribute("value", value === null ? "" : "" + value);
+      el.setAttribute("data-flux-hidden", "");
+      el.setAttribute("data-appended", "");
+      return [el];
+    }
+    return carry;
+  }
+  isObjectOrArray(value) {
+    return typeof value === "object" && value !== null;
   }
 };
 
@@ -20241,13 +20319,52 @@ var Link = Mark2.create({
 // js/editor.js
 var UIEditor = class extends UIControl {
   boot() {
-    let content = this.value ?? this.querySelector("ui-editor-content").innerHTML;
+    let content = this.getAttribute("value") ?? this.querySelector("ui-editor-content").innerHTML;
     let toolbar = this.querySelector("ui-toolbar");
     this.querySelector("ui-editor-content").innerHTML = "";
     this._controllable = new Controllable(this, { bubbles: true });
     toolbar.addEventListener("input", (e) => e.stopPropagation());
     toolbar.addEventListener("change", (e) => e.stopPropagation());
     this._disableable = new Disableable(this);
+    this._submittable = new Submittable(this, {
+      name: this.getAttribute("name"),
+      value: content
+    });
+    let extensions = [
+      StarterKit.configure({
+        history: true,
+        paragraph: {
+          keepOnSplit: false,
+          allowNesting: true
+        }
+      }),
+      TextAlign.configure({
+        types: ["paragraph", "heading"],
+        alignments: ["left", "center", "right"]
+      }),
+      Underline,
+      Link.configure({
+        openOnClick: false,
+        linkOnPaste: true
+      }),
+      Highlight,
+      Subscript,
+      Superscript,
+      Placeholder.configure({
+        placeholder: this.getAttribute("placeholder")
+      })
+    ];
+    document.dispatchEvent(new CustomEvent("flux:editor", { detail: {
+      registerExtension(extension) {
+        let name = extension.name;
+        let index = extensions.findIndex((ext) => ext.name === name);
+        if (index !== -1) {
+          extensions[index] = extension;
+        } else {
+          extensions.push(extension);
+        }
+      }
+    } }));
     this.editor = new Editor({
       element: this.querySelector("ui-editor-content"),
       content,
@@ -20260,30 +20377,7 @@ var UIEditor = class extends UIControl {
           return true;
         } }
       },
-      extensions: [
-        StarterKit.configure({
-          history: true,
-          paragraph: {
-            keepOnSplit: false,
-            allowNesting: true
-          }
-        }),
-        TextAlign.configure({
-          types: ["paragraph", "heading"],
-          alignments: ["left", "center", "right"]
-        }),
-        Underline,
-        Link.configure({
-          openOnClick: false,
-          linkOnPaste: true
-        }),
-        Highlight,
-        Subscript,
-        Superscript,
-        Placeholder.configure({
-          placeholder: this.getAttribute("placeholder")
-        })
-      ],
+      extensions,
       onBlur: () => {
         this.dispatchEvent(new Event("blur", {
           bubbles: false,
@@ -20292,6 +20386,7 @@ var UIEditor = class extends UIControl {
       },
       onUpdate: () => {
         this._controllable.dispatch();
+        this._submittable.update(this.value);
       },
       onCreate: ({ editor }) => {
         editor.view.dom.setAttribute("data-slot", "content");
