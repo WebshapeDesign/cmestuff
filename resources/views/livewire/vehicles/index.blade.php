@@ -48,7 +48,7 @@
                 <div class="relative flex-1 rounded-lg px-6 py-4 bg-zinc-50 dark:bg-zinc-700">
                     <flux:subheading>Number of Vehicles</flux:subheading>
 
-                    <flux:heading size="xl" class="mb-2">12</flux:heading>
+                    <flux:heading size="xl" class="mb-2">{{ $vehicles->total() }}</flux:heading>
 
                     <div class="flex items-center gap-1 font-medium text-sm">
                         
@@ -79,7 +79,7 @@
             Mileage
         </flux:table.column>
 
-        <flux:table.column sortable :sorted="$sortBy === 'condition'" :direction="$sortDirection" wire:click="sort('condition')">
+        <flux:table.column>
             Condition
         </flux:table.column>
 

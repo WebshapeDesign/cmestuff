@@ -1,7 +1,6 @@
 <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
     <form wire:submit.prevent="save" class="space-y-6">
-
-        <!-- Registration -->
+        <!-- Registration Field -->
         <x-input label="Registration" wire:model="registration" placeholder="Enter registration..." />
 
         <!-- Starting Mileage -->
@@ -38,6 +37,5 @@
         <x-button type="submit" class="w-full">
             Save Vehicle
         </x-button>
-
     </form>
 </div>

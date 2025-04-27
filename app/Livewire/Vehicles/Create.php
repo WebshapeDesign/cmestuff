@@ -43,7 +43,7 @@ class Create extends Component
             'user_id' => $this->user_id,
         ]);
 
-        return redirect()->route('vehicles.index')->with('success', 'Vehicle added successfully!');
+        return redirect()->route('vehicles')->with('success', 'Vehicle created successfully!');
     }
 
     public function render()
