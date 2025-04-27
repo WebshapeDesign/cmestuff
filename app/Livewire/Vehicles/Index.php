@@ -22,7 +22,9 @@ class Index extends Component
 
     public function render()
     {
-        $vehicles = Vehicle::orderBy($this->sortBy, $this->sortDirection)->get();
+        $vehicles = Vehicle::orderBy($this->sortBy, $this->sortDirection)
+    ->paginate(10);
+
 
         return view('livewire.vehicles.index', [
             'vehicles' => $vehicles,
