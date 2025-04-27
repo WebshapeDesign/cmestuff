@@ -37,6 +37,11 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('mileage-logs');
 
+    use App\Http\Livewire\Vehicles\Show;
+
+Route::get('/vehicles/{vehicle}', Show::class)->name('vehicles.show');
+
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
