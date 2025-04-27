@@ -48,6 +48,10 @@ use App\Livewire\Vehicles\Create;
 
 Route::get('/vehicles/create', Create::class)->name('vehicles.create');
 
+use App\Livewire\Vehicles\Edit;
+
+Route::get('/vehicles/{vehicle}/edit', Edit::class)->name('vehicles.edit');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 

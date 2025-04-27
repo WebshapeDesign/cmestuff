@@ -61,6 +61,12 @@
             
         </div>
 
+        <div class="flex justify-end mb-4">
+    <flux:button href="{{ route('vehicles.create') }}" variant="primary">
+        New Vehicle
+    </flux:button>
+</div>
+
         <flux:table :paginate="$vehicles">
     <flux:table.columns>
         <flux:table.column></flux:table.column>
@@ -115,9 +121,13 @@
                         <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom"></flux:button>
 
                         <flux:menu>
-                            <flux:menu.item icon="document-text">View Vehicle</flux:menu.item>
-                            <flux:menu.item icon="receipt-refund">Edit Vehicle</flux:menu.item>
-                        </flux:menu>
+    <flux:menu.item as="a" href="{{ route('vehicles.show', $vehicle) }}" icon="document-text">
+        View Vehicle
+    </flux:menu.item>
+    <flux:menu.item as="a" href="{{ route('vehicles.edit', $vehicle) }}" icon="receipt-refund">
+        Edit Vehicle
+    </flux:menu.item>
+</flux:menu>
                     </flux:dropdown>
                 </flux:table.cell>
             </flux:table.row>
