@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Livewire\Vehicles;
+namespace App\Livewire\Vehicles;
+
 
 use Livewire\Component;
 use App\Models\Vehicle;

@@ -19,6 +19,7 @@ return array(
     'App\\Livewire\\Settings\\DeleteUserForm' => $baseDir . '/app/Livewire/Settings/DeleteUserForm.php',
     'App\\Livewire\\Settings\\Password' => $baseDir . '/app/Livewire/Settings/Password.php',
     'App\\Livewire\\Settings\\Profile' => $baseDir . '/app/Livewire/Settings/Profile.php',
+    'App\\Livewire\\Vehicles\\Show' => $baseDir . '/app/Livewire/Vehicles/Show.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',

@@ -546,6 +546,7 @@ class ComposerStaticInit8bc62669ad1ad3dc46aac03063a35f34
         'App\\Livewire\\Settings\\DeleteUserForm' => __DIR__ . '/../..' . '/app/Livewire/Settings/DeleteUserForm.php',
         'App\\Livewire\\Settings\\Password' => __DIR__ . '/../..' . '/app/Livewire/Settings/Password.php',
         'App\\Livewire\\Settings\\Profile' => __DIR__ . '/../..' . '/app/Livewire/Settings/Profile.php',
+        'App\\Livewire\\Vehicles\\Show' => __DIR__ . '/../..' . '/app/Livewire/Vehicles/Show.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
