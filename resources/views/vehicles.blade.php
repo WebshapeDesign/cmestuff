@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Dashboard')">
+<x-layouts.app :title="__('Vehicles')">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
 
 
@@ -79,7 +79,7 @@
                         <flux:table.cell class="pr-2"><flux:checkbox /></flux:table.cell>
                         <flux:table.cell class="max-md:hidden">ID</flux:table.cell>
                         <flux:table.cell class="max-md:hidden">Date</flux:table.cell>
-                        <flux:table.cell class="max-md:hidden"><flux:badge :color="" size="sm" inset="top bottom">Status</flux:badge></flux:table.cell>
+                        <flux:table.cell class="max-md:hidden"><flux:badge :color="green" size="sm" inset="top bottom">Status</flux:badge></flux:table.cell>
                         <flux:table.cell class="min-w-6">
                             <div class="flex items-center gap-2">
                                 <flux:avatar src="this" size="xs" />
