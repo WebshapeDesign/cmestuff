@@ -62,37 +62,61 @@
         </div>
 
         <flux:table>
-            <flux:table.columns>
-                <flux:table.column></flux:table.column>
-                <flux:table.column class="max-md:hidden">Registration</flux:table.column>
-                <flux:table.column class="max-md:hidden">Mileage</flux:table.column>
-                <flux:table.column class="max-md:hidden">Condition</flux:table.column>
-                <flux:table.column>Assignee</flux:table.column>
-                <flux:table.column></flux:table.column>
-            </flux:table.columns>
+    <flux:table.columns>
+        <flux:table.column></flux:table.column>
+        <flux:table.column class="max-md:hidden">Registration</flux:table.column>
+        <flux:table.column class="max-md:hidden">Mileage</flux:table.column>
+        <flux:table.column class="max-md:hidden">Condition</flux:table.column>
+        <flux:table.column>Assignee</flux:table.column>
+        <flux:table.column></flux:table.column>
+    </flux:table.columns>
 
-            <flux:table.rows>
-               
-                    <flux:table.row>
-                        <flux:table.cell class="pr-2"><flux:checkbox /></flux:table.cell>
-                        <flux:table.cell class="max-md:hidden">YML56XVG</flux:table.cell>
-                        <flux:table.cell class="max-md:hidden">46000</flux:table.cell>
-                        <flux:table.cell class="max-md:hidden"><flux:badge color="green" size="sm" inset="top bottom">Good</flux:badge></flux:table.cell>
-                        <flux:table.cell class="max-w-6 truncate">Jon Doe</flux:table.cell>
-                        <flux:table.cell>
-                            <flux:dropdown position="bottom" align="end" offset="-15">
-                                <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom"></flux:button>
+    <flux:table.rows>
 
-                                <flux:menu>
-                                    <flux:menu.item icon="document-text">View Vehicle</flux:menu.item>
-                                    <flux:menu.item icon="receipt-refund">Edit Vehicle</flux:menu.item>
-                                </flux:menu>
-                            </flux:dropdown>
-                        </flux:table.cell>
-                    </flux:table.row>
-                
-            </flux:table.rows>
-        </flux:table>
+        @foreach ($vehicles as $vehicle)
+            <flux:table.row>
+                <flux:table.cell class="pr-2">
+                    <flux:checkbox />
+                </flux:table.cell>
+
+                <flux:table.cell class="max-md:hidden">
+                    {{ $vehicle->registration_number }}
+                </flux:table.cell>
+
+                <flux:table.cell class="max-md:hidden">
+                    {{ number_format($vehicle->current_mileage) }}
+                </flux:table.cell>
+
+                <flux:table.cell class="max-md:hidden">
+                    <flux:badge color="green" size="sm" inset="top bottom">
+                        Good
+                    </flux:badge>
+                </flux:table.cell>
+
+                <flux:table.cell class="max-w-6 truncate">
+                    {{ optional($vehicle->user)->name ?? 'Unassigned' }}
+                </flux:table.cell>
+
+                <flux:table.cell>
+                    <flux:dropdown position="bottom" align="end" offset="-15">
+                        <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom"></flux:button>
+
+                        <flux:menu>
+                            <flux:menu.item icon="document-text">
+                                View Vehicle
+                            </flux:menu.item>
+                            <flux:menu.item icon="receipt-refund">
+                                Edit Vehicle
+                            </flux:menu.item>
+                        </flux:menu>
+                    </flux:dropdown>
+                </flux:table.cell>
+            </flux:table.row>
+        @endforeach
+
+    </flux:table.rows>
+</flux:table>
+
 
        
     </flux:main>
