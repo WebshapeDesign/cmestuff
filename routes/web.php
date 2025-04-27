@@ -13,6 +13,30 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+    Route::view('users', 'users')
+    ->middleware(['auth', 'verified'])
+    ->name('users');
+
+    Route::view('vehicles', 'vehicles')
+    ->middleware(['auth', 'verified'])
+    ->name('vehicles');
+
+    Route::view('timesheets', 'timesheets')
+    ->middleware(['auth', 'verified'])
+    ->name('timesheets');
+
+    Route::view('holidays', 'holidays')
+    ->middleware(['auth', 'verified'])
+    ->name('holidays');
+
+    Route::view('van-logs', 'van-logs')
+    ->middleware(['auth', 'verified'])
+    ->name('van-logs');
+
+    Route::view('mileage-logs', 'mileage-logs')
+    ->middleware(['auth', 'verified'])
+    ->name('mileage-logs');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
