@@ -52,6 +52,14 @@ use App\Livewire\Vehicles\Edit;
 
 Route::get('/vehicles/{vehicle}/edit', Edit::class)->name('vehicles.edit');
 
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
+    Route::get('/users/{user}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
+});
+
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
