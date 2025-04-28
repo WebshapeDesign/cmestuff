@@ -18,12 +18,13 @@
             </flux:navlist>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Forms')" class="grid">
+            <flux:navlist.group :heading="__('Forms')" class="grid">
     <flux:navlist.item icon="clipboard-document-check" :href="route('van-logs.index')" :current="request()->routeIs('van-logs.index')" wire:navigate>{{ __('Van Logs') }}</flux:navlist.item>
-    <flux:navlist.item icon="chart-bar" :href="route('mileage-logs')" :current="request()->routeIs('mileage-logs')" wire:navigate>{{ __('Mileage Logs') }}</flux:navlist.item>
+    <flux:navlist.item icon="chart-bar" :href="route('mileage-logs.index')" :current="request()->routeIs('mileage-logs.index')" wire:navigate>{{ __('Mileage Logs') }}</flux:navlist.item>
     <flux:navlist.item icon="calendar-days" :href="route('timesheets')" :current="request()->routeIs('timesheets')" wire:navigate>{{ __('Timesheets') }}</flux:navlist.item>
     <flux:navlist.item icon="calendar" :href="route('holidays')" :current="request()->routeIs('holidays')" wire:navigate>{{ __('Holidays') }}</flux:navlist.item>
 </flux:navlist.group>
+
 
             </flux:navlist>
 
