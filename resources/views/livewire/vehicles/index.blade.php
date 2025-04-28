@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-2">
             <flux:breadcrumbs>
-    <flux:breadcrumbs.item href="#">Dasboard</flux:breadcrumbs.item>
+    <flux:breadcrumbs.item href="#">Dashboard</flux:breadcrumbs.item>
     <flux:breadcrumbs.item href="#">Vehicles</flux:breadcrumbs.item>
 </flux:breadcrumbs>
 
@@ -16,9 +16,9 @@
                 <flux:tab icon="squares-2x2" icon:variant="outline" />
             </flux:tabs>
         </div>
-
+        <flux:heading size="lg">Vehicles</flux:heading>
         <div class="flex gap-6 mb-6">
-            
+        
                 <div class="relative flex-1 rounded-lg px-6 py-4 bg-zinc-50 dark:bg-zinc-700">
                     <flux:subheading>Number of Vehicles</flux:subheading>
 
