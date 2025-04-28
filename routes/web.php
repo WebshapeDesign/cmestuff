@@ -35,8 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Timesheets and Holidays
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('timesheets', 'timesheets')->name('timesheets');
-    Route::view('holidays', 'holidays')->name('holidays');
+    Route::get('timesheets', TimesheetsIndex::class)->name('timesheets.index');
+    Route::get('timesheets/create', TimesheetsCreate::class)->name('timesheets.create');
+    Route::get('timesheets/{timesheet}/edit', TimesheetsEdit::class)->name('timesheets.edit');
 });
 
 // Van Logs
