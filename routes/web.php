@@ -11,6 +11,9 @@ use App\Livewire\Vehicles\Create;
 use App\Livewire\Vehicles\Edit;
 use App\Livewire\VanLogs\Index as VanLogsIndex;
 use App\Livewire\VanLogs\Create as VanLogsCreate;
+use App\Livewire\MileageLogs\Index as MileageLogsIndex;
+use App\Livewire\MileageLogs\Create as MileageLogsCreate;
+use App\Livewire\MileageLogs\Edit as MileageLogsEdit;
 
 // Home
 Route::get('/', function () {
@@ -44,7 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Mileage Logs
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('mileage-logs', 'mileage-logs')->name('mileage-logs');
+    Route::get('mileage-logs', MileageLogsIndex::class)->name('mileage-logs.index');
+    Route::get('mileage-logs/create', MileageLogsCreate::class)->name('mileage-logs.create');
+    Route::get('mileage-logs/{mileageLog}/edit', MileageLogsEdit::class)->name('mileage-logs.edit');
 });
 
 // Admin Only - Users
