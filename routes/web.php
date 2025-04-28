@@ -9,7 +9,8 @@ use App\Livewire\Vehicles\Index;
 use App\Livewire\Vehicles\Show;
 use App\Livewire\Vehicles\Create;
 use App\Livewire\Vehicles\Edit;
-use App\Livewire\VanLogs; // <-- Add this
+use App\Livewire\VanLogs\Index as VanLogsIndex;
+use App\Livewire\VanLogs\Create as VanLogsCreate;
 
 // Home
 Route::get('/', function () {
@@ -37,7 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Van Logs
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('van-logs', VanLogs::class)->name('van-logs.index');
+    Route::get('van-logs', VanLogsIndex::class)->name('van-logs.index');
+    Route::get('van-logs/create', VanLogsCreate::class)->name('van-logs.create');
 });
 
 // Mileage Logs
