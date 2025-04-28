@@ -42,7 +42,8 @@
         <flux:textarea label="Vehicle Defects" wire:model.defer="vehicle_defects" rows="4" />
 
         <!-- Divider -->
-        <flux:divider label="Van Equipment Checks" />
+        <flux:spacer />
+        <flux:heading size="lg">Van Equipment Checks</flux:heading>
 
         <!-- Van Items Table -->
         <div class="overflow-x-auto">
@@ -75,7 +76,8 @@
         </div>
 
         <!-- Divider -->
-        <flux:divider label="PPE / Health & Safety Equipment Checks" />
+        <flux:spacer />
+        <flux:heading size="lg">PPE / Health & Safety Equipment Checks</flux:heading>
 
         <!-- PPE Table -->
         <div class="overflow-x-auto">
