@@ -13,10 +13,6 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-    Route::view('users', 'users')
-    ->middleware(['auth', 'verified'])
-    ->name('users');
-
     use App\Livewire\Vehicles\Index;
 
     Route::get('vehicles', Index::class)
