@@ -2,12 +2,7 @@
 <flux:main container>
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-2">
-            <flux:breadcrumbs>
-    <flux:breadcrumbs.item href="#">Dashboard</flux:breadcrumbs.item>
-    <flux:breadcrumbs.item href="#">Vehicles</flux:breadcrumbs.item>
-</flux:breadcrumbs>
-
-               
+            @include('partials.breadcrumbs')
 
             </div>
 
