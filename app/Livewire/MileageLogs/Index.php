@@ -10,7 +10,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.mileage-logs.index', [
-            'mileageLogs' => MileageLog::with('vehicle', 'user')->latest()->get(),
+            'mileageLogs' => MileageLog::with('vehicle', 'user')->latest()->paginate(10),
         ]);
     }
 }
