@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VanLogController;
 use App\Http\Controllers\HolidayRequestController;
+use App\Http\Controllers\DashboardController;
 
 // Vehicles
 use App\Livewire\Vehicles\Index as VehiclesIndex;
@@ -31,9 +32,13 @@ use App\Livewire\Timesheets\Create as TimesheetsCreate;
 use App\Livewire\Timesheets\Edit as TimesheetsEdit;
 
 // Dashboard & Home
-Route::get('/', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -57,7 +62,6 @@ Route::middleware('auth')->group(function () {
 
 // Authenticated & Verified Routes
 Route::middleware(['auth', 'verified'])->group(function () {
-
     // Vehicles
     Route::get('vehicles', VehiclesIndex::class)->name('vehicles');
     Route::get('vehicles/create', VehiclesCreate::class)->name('vehicles.create');
@@ -78,15 +82,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('timesheets/create', TimesheetsCreate::class)->name('timesheets.create');
     Route::get('timesheets/{timesheet}/edit', TimesheetsEdit::class)->name('timesheets.edit');
 
-    // Holidays (still a static view until Livewire form is built)
-    Route::view('holidays', 'holidays')->name('holidays');
+    // Holidays
+    Route::get('holidays', [HolidayRequestController::class, 'index'])->name('holidays.index');
 });
 
 // Admin-only Routes
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-    Route::get('users/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
-    Route::get('users/{user}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 });
 
 // Settings
