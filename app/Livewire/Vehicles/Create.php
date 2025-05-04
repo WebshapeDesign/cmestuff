@@ -18,10 +18,11 @@ class Create extends Component
     public function save()
     {
         $this->validate([
-            'vehicle.registration_number' => 'required|string|max:255',
-            'vehicle.make' => 'required|string|max:255',
-            'vehicle.model' => 'nullable|string|max:255',
-            'vehicle.year' => 'nullable|integer',
+            'vehicle.registration_number' => 'required|string|max:12',
+            'vehicle.make' => 'nullable|string|max:20',
+            'vehicle.model' => 'nullable|string|max:20',
+            'vehicle.year' => 'nullable|integer|min:0',
+            'vehicle.starting_mileage' => 'nullable|integer|min:0',
         ]);
 
         $this->vehicle->user_id = auth()->id();

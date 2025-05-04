@@ -1,23 +1,31 @@
 <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
     <form wire:submit.prevent="save" class="space-y-6">
         <!-- Registration Field -->
-        <x-input label="Registration" wire:model="registration" placeholder="Enter registration..." />
-
+        <flux:input label="Registration Number" required>
+                    <input type="text" wire:model="vehicle.registration_number" class="input" />
+                    @error('vehicle.registration_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </flux:input>
+                
         <!-- Starting Mileage -->
-        <x-input label="Starting Mileage" type="number" wire:model="starting_mileage" placeholder="Enter starting mileage..." />
+        <flux:input label="Starting Mileage">
+                    <input type="number" wire:model="vehicle.starting_mileage" class="input" />
+                    @error('vehicle.starting_mileage') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </flux:input>
 
-        <!-- Make -->
-        <x-select label="Make" wire:model="make">
-            <input type="text" wire:model="vehicle.make" class="input" />
-        </x-select>
+        <flux:input label="Make">
+                    <input type="text" wire:model="vehicle.make" class="input" />
+                    @error('vehicle.make') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </flux:input>
 
-        <!-- Model -->
-        <x-select label="Model" wire:model="model">
-            <input type="text" wire:model="vehicle.model" class="input" />
-        </x-select>
+                <flux:input label="Model">
+                    <input type="text" wire:model="vehicle.model" class="input" />
+                    @error('vehicle.model') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </flux:input>
 
-        <!-- Current Mileage -->
-        <x-input label="Current Mileage" type="number" wire:model="current_mileage" placeholder="Enter current mileage..." />
+                <flux:input label="Year">
+                    <input type="number" wire:model="vehicle.year" class="input" />
+                    @error('vehicle.year') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </flux:input>
 
         <!-- User Assignment -->
         <x-select label="Assigned User" wire:model="user_id">
