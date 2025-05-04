@@ -34,9 +34,12 @@ use App\Livewire\Timesheets\Create as TimesheetsCreate;
 use App\Livewire\Timesheets\Edit as TimesheetsEdit;
 
 // Dashboard & Home
-Route::get('/', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+    return redirect()->route('login');
+})->name('home');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
