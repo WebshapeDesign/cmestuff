@@ -12,6 +12,7 @@ use App\Http\Controllers\HolidayRequestController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TimesheetController;
 use App\Http\Controllers\MileageLogController;
+use App\Http\Controllers\SettingsController;
 
 // Vehicles
 use App\Livewire\Vehicles\Index as VehiclesIndex;
@@ -53,8 +54,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Settings
-    Route::redirect('settings', 'settings/profile');
-    Route::get('settings/profile', Profile::class)->name('settings.profile');
+    Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
+    Route::put('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::put('/settings/preferences', [SettingsController::class, 'updatePreferences'])->name('settings.preferences.update');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 });

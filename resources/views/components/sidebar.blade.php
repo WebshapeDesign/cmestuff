@@ -1,4 +1,4 @@
-
+<div>
     <flux:sidebar sticky stashable class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
@@ -55,3 +55,4 @@
             name="{{ auth()->user()->name }}"
         />
     </flux:header>
+</div>
