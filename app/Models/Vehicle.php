@@ -11,16 +11,25 @@ class Vehicle extends Model
     use HasFactory;
 
     protected $fillable = [
-        'registration_number',
-        'starting_mileage',
+        'registration',
         'make',
         'model',
-        'current_mileage',
+        'year',
         'user_id',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function vanLogs()
+    {
+        return $this->hasMany(VanLog::class);
+    }
+
+    public function mileageLogs()
+    {
+        return $this->hasMany(MileageLog::class);
     }
 }
