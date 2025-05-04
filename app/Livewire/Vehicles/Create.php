@@ -14,7 +14,7 @@ class Create extends Component
         $this->vehicle = new Vehicle();
     }
 
-    public function save(): void
+    public function save():
     {
         $this->validate([
             'vehicle.registration_number' => 'required|string|max:255',
