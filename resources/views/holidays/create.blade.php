@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Request Holiday') }}
+            {{ __('New Holiday Request') }}
         </h2>
     </x-slot>
 
@@ -13,6 +13,21 @@
                         @csrf
 
                         <div class="grid grid-cols-1 gap-6">
+                            @if(auth()->user()->isAdmin())
+                                <div>
+                                    <x-label for="user_id" :value="__('User')" />
+                                    <select id="user_id" name="user_id" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                        <option value="">Select a user</option>
+                                        @foreach($users as $user)
+                                            <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                                {{ $user->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <x-input-error :messages="$errors->get('user_id')" class="mt-2" />
+                                </div>
+                            @endif
+
                             <div>
                                 <x-label for="start_date" :value="__('Start Date')" />
                                 <x-input id="start_date" class="block mt-1 w-full" type="date" name="start_date" :value="old('start_date')" required />
@@ -26,9 +41,9 @@
                             </div>
 
                             <div>
-                                <x-label for="reason" :value="__('Reason')" />
-                                <x-textarea id="reason" class="block mt-1 w-full" name="reason" required>{{ old('reason') }}</x-textarea>
-                                <x-input-error :messages="$errors->get('reason')" class="mt-2" />
+                                <x-label for="notes" :value="__('Notes')" />
+                                <x-textarea id="notes" class="block mt-1 w-full" name="notes">{{ old('notes') }}</x-textarea>
+                                <x-input-error :messages="$errors->get('notes')" class="mt-2" />
                             </div>
                         </div>
 
@@ -37,7 +52,7 @@
                                 {{ __('Cancel') }}
                             </a>
                             <x-button class="ml-4">
-                                {{ __('Submit Request') }}
+                                {{ __('Create Holiday Request') }}
                             </x-button>
                         </div>
                     </form>

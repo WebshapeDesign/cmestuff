@@ -92,22 +92,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Holidays
     Route::get('holidays', [HolidayRequestController::class, 'index'])->name('holidays.index');
     Route::get('holidays/create', [HolidayRequestController::class, 'create'])->name('holidays.create');
+    Route::post('holidays', [HolidayRequestController::class, 'store'])->name('holidays.store');
     Route::get('holidays/{holidayRequest}', [HolidayRequestController::class, 'show'])->name('holidays.show');
     Route::get('holidays/{holidayRequest}/edit', [HolidayRequestController::class, 'edit'])->name('holidays.edit');
-    Route::post('holidays', [HolidayRequestController::class, 'store'])->name('holidays.store');
     Route::put('holidays/{holidayRequest}', [HolidayRequestController::class, 'update'])->name('holidays.update');
+    Route::delete('holidays/{holidayRequest}', [HolidayRequestController::class, 'destroy'])->name('holidays.destroy');
     Route::post('holidays/{holidayRequest}/approve', [HolidayRequestController::class, 'approve'])->name('holidays.approve');
     Route::post('holidays/{holidayRequest}/reject', [HolidayRequestController::class, 'reject'])->name('holidays.reject');
 });
 
 // Admin-only Routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
 // Auth
