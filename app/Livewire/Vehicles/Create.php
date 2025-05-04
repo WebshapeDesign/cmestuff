@@ -9,12 +9,12 @@ class Create extends Component
 {
     public Vehicle $vehicle;
 
-    public function mount(): void
+    public function mount()
     {
         $this->vehicle = new Vehicle();
     }
 
-    public function save():
+    public function save()
     {
         $this->validate([
             'vehicle.registration_number' => 'required|string|max:255',
@@ -23,9 +23,7 @@ class Create extends Component
             'vehicle.year' => 'nullable|integer',
         ]);
 
-        // Assign user_id — ensure regular users can only assign to themselves
         $this->vehicle->user_id = auth()->id();
-
         $this->vehicle->save();
 
         session()->flash('success', 'Vehicle created successfully.');
