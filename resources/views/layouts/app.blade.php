@@ -15,32 +15,28 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <!-- Sidebar -->
             @include('components.sidebar')
 
-            <!-- Page Content -->
-            <div class="p-4 sm:ml-64">
-                <div class="p-4 rounded-lg mt-14">
-                    <!-- Page Heading -->
-                    @if (isset($header))
-                        <header class="bg-white shadow">
-                            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                                {{ $header }}
-                            </div>
-                        </header>
-                    @endif
+            <!-- Main Content -->
+            <flux:main container class="max-w-7xl mx-auto">
+                @if (isset($header))
+                    <flux:heading size="xl">{{ $header }}</flux:heading>
+                @endif
 
-                    <!-- Breadcrumbs -->
-                    @include('partials.breadcrumbs')
+                <!-- Breadcrumbs -->
+                @include('components.breadcrumbs')
 
-                    <!-- Main Content -->
-                    <main>
-                        {{ $slot }}
-                    </main>
-                </div>
-            </div>
+                @if (isset($header))
+                    <flux:separator variant="subtle" class="my-8" />
+                @endif
+
+                <!-- Page Content -->
+                <main>
+                    {{ $slot }}
+                </main>
+            </flux:main>
         </div>
 
         @fluxScripts

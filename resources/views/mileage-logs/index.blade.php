@@ -1,71 +1,117 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Mileage Logs') }}
-            </h2>
-            <a href="{{ route('mileage-logs.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                {{ __('New Mileage Log') }}
-            </a>
-        </div>
-    </x-slot>
+<x-layouts.app>
+    <x-slot name="header">Mileage Logs</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Week</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mileage</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($mileageLogs as $log)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ $log->vehicle->registration }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ $log->week_start_date->format('d/m/Y') }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ $log->start_mileage }} - {{ $log->end_mileage }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                {{ $log->is_submitted ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                                {{ $log->is_submitted ? 'Submitted' : 'Draft' }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a href="{{ route('mileage-logs.show', $log) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                                            @if(!$log->is_submitted)
-                                                <a href="{{ route('mileage-logs.edit', $log) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                            No mileage logs found.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="mt-4">
-                        {{ $mileageLogs->links() }}
-                    </div>
-                </div>
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
+                <flux:select size="sm" wire:model="dateRange">
+                    <option value="7">Last 7 days</option>
+                    <option value="14">Last 14 days</option>
+                    <option value="30" selected>Last 30 days</option>
+                    <option value="60">Last 60 days</option>
+                    <option value="90">Last 90 days</option>
+                </flux:select>
+                <flux:subheading class="max-md:hidden whitespace-nowrap">compared to</flux:subheading>
+                <flux:select size="sm" class="max-md:hidden" wire:model="comparisonPeriod">
+                    <option value="previous" selected>Previous period</option>
+                    <option value="last_year">Same period last year</option>
+                    <option value="last_month">Last month</option>
+                    <option value="last_quarter">Last quarter</option>
+                    <option value="last_6_months">Last 6 months</option>
+                    <option value="last_12_months">Last 12 months</option>
+                </flux:select>
+            </div>
+            <flux:separator vertical class="max-lg:hidden mx-2 my-2" />
+            <div class="max-lg:hidden flex justify-start items-center gap-2">
+                <flux:subheading class="whitespace-nowrap">Filter by:</flux:subheading>
+                <flux:badge as="button" variant="pill" color="zinc" icon="plus" size="lg">Vehicle</flux:badge>
+                <flux:badge as="button" variant="pill" color="zinc" icon="plus" size="lg" class="max-md:hidden">Driver</flux:badge>
+                <flux:badge as="button" variant="pill" color="zinc" icon="plus" size="lg">More filters...</flux:badge>
             </div>
         </div>
+        <div class="flex items-center gap-2">
+            <flux:button variant="primary" icon="plus" wire:click="$dispatch('open-modal', { component: 'mileage-logs.create' })">
+                Add Log
+            </flux:button>
+            <flux:tabs variant="segmented" class="w-auto! ml-2" size="sm">
+                <flux:tab icon="list-bullet" icon:variant="outline" />
+                <flux:tab icon="squares-2x2" icon:variant="outline" />
+            </flux:tabs>
+        </div>
     </div>
-</x-app-layout> 
+
+    <div class="flex gap-6 mb-6">
+        @foreach ($this->stats as $stat)
+            <div class="relative flex-1 rounded-lg px-6 py-4 bg-zinc-50 dark:bg-zinc-700 {{ $loop->iteration > 1 ? 'max-md:hidden' : '' }} {{ $loop->iteration > 3 ? 'max-lg:hidden' : '' }}">
+                <flux:subheading>{{ $stat['title'] }}</flux:subheading>
+                <flux:heading size="xl" class="mb-2">{{ $stat['value'] }}</flux:heading>
+                <div class="flex items-center gap-1 font-medium text-sm @if ($stat['trendUp']) text-green-600 dark:text-green-400 @else text-red-500 dark:text-red-400 @endif">
+                    <flux:icon :icon="$stat['trendUp'] ? 'arrow-trending-up' : 'arrow-trending-down'" variant="micro" /> {{ $stat['trend'] }}
+                </div>
+                <div class="absolute top-0 right-0 pr-2 pt-2">
+                    <flux:button icon="ellipsis-horizontal" variant="subtle" size="sm" />
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <flux:table>
+        <flux:table.columns>
+            <flux:table.column></flux:table.column>
+            <flux:table.column class="max-md:hidden">ID</flux:table.column>
+            <flux:table.column>Date</flux:table.column>
+            <flux:table.column class="max-md:hidden">Vehicle</flux:table.column>
+            <flux:table.column class="max-md:hidden">Driver</flux:table.column>
+            <flux:table.column>Mileage</flux:table.column>
+            <flux:table.column>Status</flux:table.column>
+            <flux:table.column></flux:table.column>
+        </flux:table.columns>
+        <flux:table.rows>
+            @foreach ($this->mileageLogs as $log)
+                <flux:table.row>
+                    <flux:table.cell class="pr-2">
+                        <flux:checkbox wire:model="selectedLogs" value="{{ $log->id }}" />
+                    </flux:table.cell>
+                    <flux:table.cell class="max-md:hidden">#{{ $log->id }}</flux:table.cell>
+                    <flux:table.cell>{{ $log->date->format('d/m/Y') }}</flux:table.cell>
+                    <flux:table.cell class="max-md:hidden">
+                        <div class="flex items-center gap-2">
+                            <flux:avatar src="{{ $log->vehicle->image_url }}" size="xs" />
+                            <span>{{ $log->vehicle->registration_number }}</span>
+                        </div>
+                    </flux:table.cell>
+                    <flux:table.cell class="max-md:hidden">
+                        <div class="flex items-center gap-2">
+                            <flux:avatar src="{{ $log->driver->avatar_url }}" size="xs" />
+                            <span>{{ $log->driver->name }}</span>
+                        </div>
+                    </flux:table.cell>
+                    <flux:table.cell>{{ number_format($log->mileage) }}</flux:table.cell>
+                    <flux:table.cell>
+                        <flux:badge :color="$log->status_color" size="sm" inset="top bottom">
+                            {{ $log->status }}
+                        </flux:badge>
+                    </flux:table.cell>
+                    <flux:table.cell>
+                        <flux:dropdown position="bottom" align="end" offset="-15">
+                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom"></flux:button>
+                            <flux:menu>
+                                <flux:menu.item icon="eye" wire:click="$dispatch('open-modal', { component: 'mileage-logs.view', arguments: { log: {{ $log->id }} } })">
+                                    View
+                                </flux:menu.item>
+                                <flux:menu.item icon="pencil" wire:click="$dispatch('open-modal', { component: 'mileage-logs.edit', arguments: { log: {{ $log->id }} } })">
+                                    Edit
+                                </flux:menu.item>
+                                <flux:menu.item icon="archive-box" variant="danger" wire:click="delete({{ $log->id }})">
+                                    Archive
+                                </flux:menu.item>
+                            </flux:menu>
+                        </flux:dropdown>
+                    </flux:table.cell>
+                </flux:table.row>
+            @endforeach
+        </flux:table.rows>
+    </flux:table>
+
+    <flux:pagination :paginator="$this->mileageLogs" />
+</x-layouts.app> 
