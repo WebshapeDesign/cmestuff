@@ -10,35 +10,37 @@ class HolidayRequestController extends Controller
 {
     public function index()
     {
-        if (auth()->user()->isAdmin()) {
-            $holidayRequests = HolidayRequest::with('user')->latest()->paginate(10);
-        } else {
-            $holidayRequests = auth()->user()->holidayRequests()->latest()->paginate(10);
-        }
+        $holidayRequests = auth()->user()->isAdmin()
+            ? HolidayRequest::with('user')->latest()->paginate(10)
+            : auth()->user()->holidayRequests()->latest()->paginate(10);
+
         return view('holidays.index', compact('holidayRequests'));
     }
 
     public function create()
     {
-        return view('holidays.create');
+        $users = auth()->user()->isAdmin() ? User::all() : null;
+        return view('holidays.create', compact('users'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'start_date' => 'required|date|after_or_equal:today',
+            'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'reason' => 'required|string|max:255',
+            'notes' => 'nullable|string',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
-        $validated['user_id'] = auth()->id();
-        $validated['status'] = 'pending';
-        $validated['days_requested'] = $this->calculateDays($validated['start_date'], $validated['end_date']);
+        // If user_id is not provided or user is not admin, use the authenticated user
+        if (!auth()->user()->isAdmin() || !isset($validated['user_id'])) {
+            $validated['user_id'] = auth()->id();
+        }
 
-        HolidayRequest::create($validated);
+        $holidayRequest = HolidayRequest::create($validated);
 
         return redirect()->route('holidays.index')
-            ->with('success', 'Holiday request submitted successfully.');
+            ->with('success', 'Holiday request created successfully.');
     }
 
     public function show(HolidayRequest $holidayRequest)
@@ -50,7 +52,8 @@ class HolidayRequestController extends Controller
     public function edit(HolidayRequest $holidayRequest)
     {
         $this->authorize('update', $holidayRequest);
-        return view('holidays.edit', compact('holidayRequest'));
+        $users = auth()->user()->isAdmin() ? User::all() : null;
+        return view('holidays.edit', compact('holidayRequest', 'users'));
     }
 
     public function update(Request $request, HolidayRequest $holidayRequest)
@@ -58,12 +61,16 @@ class HolidayRequestController extends Controller
         $this->authorize('update', $holidayRequest);
 
         $validated = $request->validate([
-            'start_date' => 'required|date|after_or_equal:today',
+            'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'reason' => 'required|string|max:255',
+            'notes' => 'nullable|string',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
-        $validated['days_requested'] = $this->calculateDays($validated['start_date'], $validated['end_date']);
+        // If user is not admin, ensure they can't change the user_id
+        if (!auth()->user()->isAdmin()) {
+            unset($validated['user_id']);
+        }
 
         $holidayRequest->update($validated);
 
@@ -71,10 +78,18 @@ class HolidayRequestController extends Controller
             ->with('success', 'Holiday request updated successfully.');
     }
 
+    public function destroy(HolidayRequest $holidayRequest)
+    {
+        $this->authorize('delete', $holidayRequest);
+        $holidayRequest->delete();
+
+        return redirect()->route('holidays.index')
+            ->with('success', 'Holiday request deleted successfully.');
+    }
+
     public function approve(HolidayRequest $holidayRequest)
     {
         $this->authorize('approve', $holidayRequest);
-        
         $holidayRequest->update(['status' => 'approved']);
 
         return redirect()->route('holidays.index')
@@ -84,17 +99,9 @@ class HolidayRequestController extends Controller
     public function reject(HolidayRequest $holidayRequest)
     {
         $this->authorize('approve', $holidayRequest);
-        
         $holidayRequest->update(['status' => 'rejected']);
 
         return redirect()->route('holidays.index')
             ->with('success', 'Holiday request rejected successfully.');
-    }
-
-    private function calculateDays($startDate, $endDate)
-    {
-        $start = \Carbon\Carbon::parse($startDate);
-        $end = \Carbon\Carbon::parse($endDate);
-        return $start->diffInDays($end) + 1;
     }
 } 
