@@ -9,7 +9,7 @@ class Edit extends Component
 {
     public Vehicle $vehicle;
 
-    public function mount(Vehicle $vehicle): void
+    public function mount(Vehicle $vehicle)
     {
         // Access control: only allow editing if admin or owner
         if (!auth()->user()->isAdmin() && $vehicle->user_id !== auth()->id()) {
@@ -19,7 +19,7 @@ class Edit extends Component
         $this->vehicle = $vehicle;
     }
 
-    public function save(): void
+    public function save()
     {
         $this->validate([
             'vehicle.registration_number' => 'required|string|max:255',
