@@ -8,18 +8,12 @@
 
         <!-- Make -->
         <x-select label="Make" wire:model="make">
-            <option value="">Select Make</option>
-            @foreach($makes as $makeOption)
-                <option value="{{ $makeOption }}">{{ $makeOption }}</option>
-            @endforeach
+            <input type="text" wire:model="vehicle.make" class="input" />
         </x-select>
 
         <!-- Model -->
         <x-select label="Model" wire:model="model">
-            <option value="">Select Model</option>
-            @foreach($models as $modelOption)
-                <option value="{{ $modelOption }}">{{ $modelOption }}</option>
-            @endforeach
+            <input type="text" wire:model="vehicle.model" class="input" />
         </x-select>
 
         <!-- Current Mileage -->
