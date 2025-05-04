@@ -13,6 +13,9 @@ class UsersTable extends Component
     public $search = '';
     public $sortBy = 'name';
     public $sortDirection = 'asc';
+    public $loading = false;
+    public $error = null;
+    public $success = null;
 
     protected $queryString = ['search', 'sortBy', 'sortDirection'];
 
@@ -33,14 +36,21 @@ class UsersTable extends Component
 
     public function render()
     {
-        $users = User::query()
-            ->when($this->search, function($query) {
-                $query->where('name', 'like', '%'.$this->search.'%')
-                      ->orWhere('email', 'like', '%'.$this->search.'%');
-            })
-            ->orderBy($this->sortBy, $this->sortDirection)
-            ->paginate(10);
-
+        $this->loading = true;
+        try {
+            $users = User::query()
+                ->when($this->search, function($query) {
+                    $query->where('name', 'like', '%'.$this->search.'%')
+                          ->orWhere('email', 'like', '%'.$this->search.'%');
+                })
+                ->orderBy($this->sortBy, $this->sortDirection)
+                ->paginate(10);
+            $this->error = null;
+        } catch (\Exception $e) {
+            $this->error = 'An error occurred while fetching users.';
+            $users = collect([]);
+        }
+        $this->loading = false;
         return view('livewire.users-table', compact('users'));
     }
 }

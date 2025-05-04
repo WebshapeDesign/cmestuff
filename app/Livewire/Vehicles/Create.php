@@ -17,6 +17,7 @@ class Create extends Component
 
     public function save()
     {
+        logger('Vehicle save triggered');
         $this->validate([
             'vehicle.registration_number' => 'required|string|max:12',
             'vehicle.make' => 'nullable|string|max:20',

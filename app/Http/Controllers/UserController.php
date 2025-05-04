@@ -6,12 +6,19 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return view('users.index');
+        try {
+            $users = User::all();
+            return view('users.index', compact('users'));
+        } catch (\Exception $e) {
+            Log::error('Error fetching users: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', 'An error occurred while fetching users.');
+        }
     }
 
     public function create()
@@ -21,21 +28,20 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8'],
-            'role' => ['nullable', 'string'],
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8',
+                'role' => 'required|string|in:admin,user',
+            ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => $validated['role'] ?? 'user',
-        ]);
-
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+            $user = User::create($validated);
+            return redirect()->route('users.index')->with('success', 'User created successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error creating user: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while creating the user.');
+        }
     }
 
     public function edit(User $user)
@@ -45,30 +51,18 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($user->id),
-            ],
-            'password' => ['nullable', 'string', 'min:8'],
-            'role' => ['nullable', 'string'],
-        ]);
-
-        $user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'role' => $validated['role'] ?? 'user',
-        ]);
-
-        if (!empty($validated['password'])) {
-            $user->update([
-                'password' => Hash::make($validated['password']),
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $user->id,
+                'role' => 'required|string|in:admin,user',
             ]);
-        }
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+            $user->update($validated);
+            return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error updating user: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while updating the user.');
+        }
     }
 }

@@ -25,9 +25,21 @@ class VanLogs extends Component
     public $vanItems = [];
     public $ppeItems = [];
 
+    public $loading = false;
+    public $error = null;
+    public $success = null;
+
     public function mount()
     {
-        $this->vehicles = Vehicle::orderBy('registration')->get();
+        $this->loading = true;
+        try {
+            $this->vehicles = Vehicle::orderBy('registration')->get();
+            $this->error = null;
+        } catch (\Exception $e) {
+            $this->error = 'An error occurred while fetching vehicles.';
+            $this->vehicles = collect([]);
+        }
+        $this->loading = false;
 
         $this->vanItems = [
             ['label' => 'Ladder/Steps', 'checked' => false, 'signed' => '', 'date' => ''],
@@ -52,42 +64,54 @@ class VanLogs extends Component
 
     public function updatedVehicleId($value)
     {
-        $vehicle = Vehicle::find($value);
-        if ($vehicle) {
-            $this->vehicle_mileage = $vehicle->mileage;
-        } else {
-            $this->vehicle_mileage = null;
+        $this->loading = true;
+        try {
+            $vehicle = Vehicle::find($value);
+            if ($vehicle) {
+                $this->vehicle_mileage = $vehicle->mileage;
+            } else {
+                $this->vehicle_mileage = null;
+            }
+            $this->error = null;
+        } catch (\Exception $e) {
+            $this->error = 'An error occurred while fetching vehicle details.';
         }
+        $this->loading = false;
     }
 
     public function save()
     {
-        $this->validate([
-            'vehicle_id' => 'required|exists:vehicles,id',
-        ]);
+        $this->loading = true;
+        try {
+            $this->validate([
+                'vehicle_id' => 'required|exists:vehicles,id',
+            ]);
 
-        VanLog::create([
-            'vehicle_id' => $this->vehicle_id,
-            'user_id' => auth()->id(),
-            'vehicle_mileage' => $this->vehicle_mileage,
+            VanLog::create([
+                'vehicle_id' => $this->vehicle_id,
+                'user_id' => auth()->id(),
+                'vehicle_mileage' => $this->vehicle_mileage,
 
-            'oil_level_action' => $this->oil_level_action,
-            'oil_level_signed' => $this->oil_level_signed,
-            'water_level_action' => $this->water_level_action,
-            'water_level_signed' => $this->water_level_signed,
-            'tyres_action' => $this->tyres_action,
-            'tyres_signed' => $this->tyres_signed,
-            'screen_action' => $this->screen_action,
-            'screen_signed' => $this->screen_signed,
-            'vehicle_defects' => $this->vehicle_defects,
+                'oil_level_action' => $this->oil_level_action,
+                'oil_level_signed' => $this->oil_level_signed,
+                'water_level_action' => $this->water_level_action,
+                'water_level_signed' => $this->water_level_signed,
+                'tyres_action' => $this->tyres_action,
+                'tyres_signed' => $this->tyres_signed,
+                'screen_action' => $this->screen_action,
+                'screen_signed' => $this->screen_signed,
+                'vehicle_defects' => $this->vehicle_defects,
 
-            'van_items_check' => $this->vanItems,
-            'ppe_check' => $this->ppeItems,
-        ]);
+                'van_items_check' => $this->vanItems,
+                'ppe_check' => $this->ppeItems,
+            ]);
 
-        session()->flash('success', 'Van Log saved successfully.');
-
-        return redirect()->route('van-logs.index');
+            $this->success = 'Van Log saved successfully.';
+            $this->error = null;
+        } catch (\Exception $e) {
+            $this->error = 'An error occurred while saving the van log.';
+        }
+        $this->loading = false;
     }
 
     public function render()
