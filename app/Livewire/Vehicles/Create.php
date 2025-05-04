@@ -33,6 +33,8 @@ class Create extends Component
 
     public function render()
     {
-        return view('livewire.vehicles.create');
+        return view('livewire.vehicles.create', [
+            'users' => User::orderBy('name')->get(),
+        ]);
     }
 }
