@@ -4,6 +4,7 @@ namespace App\Livewire\Vehicles;
 
 use App\Models\Vehicle;
 use Livewire\Component;
+use App\Models\User;
 
 class Create extends Component
 {
