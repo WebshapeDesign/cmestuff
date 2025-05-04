@@ -16,11 +16,9 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            <!-- Navigation -->
-            @include('layouts.navigation')
 
             <!-- Sidebar -->
-            @include('layouts.sidebar')
+            @include('components.sidebar')
 
             <!-- Page Content -->
             <div class="p-4 sm:ml-64">
