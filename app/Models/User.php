@@ -8,11 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +24,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // Added role here
+        'role',
+        'avatar_url',
+        'mobile_number',
+        'department',
+        'status',
     ];
 
     /**
@@ -41,14 +46,15 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_admin' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    protected $appends = [
+        'admin_status',
+        'role_color',
+    ];
 
     /**
      * Get the user's initials.
@@ -101,5 +107,25 @@ class User extends Authenticatable
     public function holidays()
     {
         return $this->hasMany(Holiday::class);
+    }
+
+    public function mileageLogs()
+    {
+        return $this->hasMany(MileageLog::class);
+    }
+
+    public function getAdminStatusAttribute()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function getRoleColorAttribute()
+    {
+        return match($this->role) {
+            'admin' => 'purple',
+            'manager' => 'blue',
+            'driver' => 'green',
+            default => 'gray',
+        };
     }
 }
