@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\VanLogController;
+use App\Http\Controllers\HolidayRequestController;
 
 // Vehicles
 use App\Livewire\Vehicles\Index as VehiclesIndex;
@@ -27,12 +32,28 @@ use App\Livewire\Timesheets\Edit as TimesheetsEdit;
 
 // Dashboard & Home
 Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Vehicle routes
+    Route::resource('vehicles', VehicleController::class);
+    
+    // Van Log routes
+    Route::resource('van-logs', VanLogController::class);
+    
+    // Holiday routes
+    Route::resource('holidays', HolidayRequestController::class);
+    
+    // User routes (admin only)
+    Route::middleware('admin')->group(function () {
+        Route::resource('users', UserController::class);
+    });
+});
 
 // Authenticated & Verified Routes
 Route::middleware(['auth', 'verified'])->group(function () {
