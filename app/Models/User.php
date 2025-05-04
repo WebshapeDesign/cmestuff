@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role', // Added role here
     ];
 
     /**
@@ -48,7 +49,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's initials
+     * Get the user's initials.
      */
     public function initials(): string
     {
@@ -56,5 +57,37 @@ class User extends Authenticatable
             ->explode(' ')
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Relationship: User has many Vehicles.
+     */
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class);
+    }
+
+    /**
+     * Relationship: User has many Timesheets.
+     */
+    public function timesheets()
+    {
+        return $this->hasMany(Timesheet::class);
+    }
+
+    /**
+     * Relationship: User has many Holiday Requests (if you make a Holiday model later).
+     */
+    public function holidays()
+    {
+        return $this->hasMany(Holiday::class);
     }
 }
