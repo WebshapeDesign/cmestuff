@@ -9,6 +9,7 @@ use App\Livewire\Settings\Profile;
 use App\Livewire\Vehicles\Index as VehiclesIndex;
 use App\Livewire\Vehicles\Create as VehiclesCreate;
 use App\Livewire\Vehicles\Edit as VehiclesEdit;
+use App\Livewire\Vehicles\Show as VehiclesShow;
 
 // Van Logs
 use App\Livewire\VanLogs\Index as VanLogsIndex;
@@ -40,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('vehicles', VehiclesIndex::class)->name('vehicles');
     Route::get('vehicles/create', VehiclesCreate::class)->name('vehicles.create');
     Route::get('vehicles/{vehicle}/edit', VehiclesEdit::class)->name('vehicles.edit');
+    Route::get('vehicles/{vehicle}', VehiclesShow::class)->name('vehicles.show');
 
     // Van Logs
     Route::get('van-logs', VanLogsIndex::class)->name('van-logs.index');
