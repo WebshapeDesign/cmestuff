@@ -40,47 +40,41 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+// Authenticated Routes
+Route::middleware(['auth'])->group(function () {
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Vehicle routes
-    Route::resource('vehicles', VehicleController::class);
-    
-    // Van Log routes
-    Route::resource('van-logs', VanLogController::class);
-    
-    // Holiday routes
-    Route::resource('holidays', HolidayRequestController::class);
-    
-    // User routes (admin only)
-    Route::middleware('admin')->group(function () {
-        Route::resource('users', UserController::class);
-    });
+    // Settings
+    Route::redirect('settings', 'settings/profile');
+    Route::get('settings/profile', Profile::class)->name('settings.profile');
+    Route::get('settings/password', Password::class)->name('settings.password');
+    Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 });
 
 // Authenticated & Verified Routes
 Route::middleware(['auth', 'verified'])->group(function () {
     // Vehicles
-    Route::get('vehicles', VehiclesIndex::class)->name('vehicles');
-    Route::get('vehicles/create', VehiclesCreate::class)->name('vehicles.create');
-    Route::get('vehicles/{vehicle}/edit', VehiclesEdit::class)->name('vehicles.edit');
-    Route::get('vehicles/{vehicle}', VehiclesShow::class)->name('vehicles.show');
+    Route::get('vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
+    Route::get('vehicles/create', [VehicleController::class, 'create'])->name('vehicles.create');
+    Route::get('vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
+    Route::get('vehicles/{vehicle}', [VehicleController::class, 'show'])->name('vehicles.show');
 
     // Van Logs
-    Route::get('van-logs', VanLogsIndex::class)->name('van-logs.index');
-    Route::get('van-logs/create', VanLogsCreate::class)->name('van-logs.create');
+    Route::get('van-logs', [VanLogController::class, 'index'])->name('van-logs.index');
+    Route::get('van-logs/create', [VanLogController::class, 'create'])->name('van-logs.create');
 
     // Mileage Logs
-    Route::get('mileage-logs', MileageLogsIndex::class)->name('mileage-logs.index');
-    Route::get('mileage-logs/create', MileageLogsCreate::class)->name('mileage-logs.create');
-    Route::get('mileage-logs/{mileageLog}/edit', MileageLogsEdit::class)->name('mileage-logs.edit');
+    Route::get('mileage-logs', [MileageLogController::class, 'index'])->name('mileage-logs.index');
+    Route::get('mileage-logs/create', [MileageLogController::class, 'create'])->name('mileage-logs.create');
+    Route::get('mileage-logs/{mileageLog}/edit', [MileageLogController::class, 'edit'])->name('mileage-logs.edit');
 
     // Timesheets
-    Route::get('timesheets', TimesheetsIndex::class)->name('timesheets.index');
-    Route::get('timesheets/create', TimesheetsCreate::class)->name('timesheets.create');
-    Route::get('timesheets/{timesheet}/edit', TimesheetsEdit::class)->name('timesheets.edit');
+    Route::get('timesheets', [TimesheetController::class, 'index'])->name('timesheets.index');
+    Route::get('timesheets/create', [TimesheetController::class, 'create'])->name('timesheets.create');
+    Route::get('timesheets/{timesheet}/edit', [TimesheetController::class, 'edit'])->name('timesheets.edit');
 
     // Holidays
     Route::get('holidays', [HolidayRequestController::class, 'index'])->name('holidays.index');
@@ -91,14 +85,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-});
-
-// Settings
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
-    Route::get('settings/profile', Profile::class)->name('settings.profile');
-    Route::get('settings/password', Password::class)->name('settings.password');
-    Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 });
 
 // Auth
